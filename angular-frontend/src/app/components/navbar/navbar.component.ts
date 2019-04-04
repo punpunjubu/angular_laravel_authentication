@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../.././service/auth.service';
+import { TokenService } from '../.././service/token.service';
 
 @Component({
   selector: 'app-navbar',
@@ -6,10 +9,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.sass']
 })
 export class NavbarComponent implements OnInit {
-
-  constructor() { }
+  public loggedIn: boolean;
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private token: TokenService
+  ) { }
 
   ngOnInit() {
+    this.auth.authStatus.subscribe(value => this.loggedIn = value);
+  }
+  logout(event: MouseEvent) {
+    event.preventDefault();
+    this.token.remove();
+    this.auth.changeAuthStatus(false);
+    this.router.navigateByUrl('/login');
   }
 
 }
